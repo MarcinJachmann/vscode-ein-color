@@ -1,0 +1,5 @@
+.vscode/
+out/
+vsc-extension-quickstart.md
+other/
+eslint.config.mjs

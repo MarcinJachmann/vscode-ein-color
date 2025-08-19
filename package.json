@@ -1,0 +1,159 @@
+{
+    "name": "vscode-eincolor",
+    "displayName": "Ein Color",
+    "version": "0.9.0",
+    "description": "Ein Color brings term coloring and styling to your einsum / einops equations for better readability.",
+    "publisher": "MarcinJachmann",
+    "license": "MIT",
+    "icon": "logo/logo-256x256.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MarcinJachmann/vscode-ein-color.git"
+    },
+    "bugs": {
+		"url": "https://github.com/MarcinJachmann/vscode-ein-color/issues"
+	},
+    "keywords": [
+        "einsum",
+        "einops",
+        "fancy",
+        "highlight",
+        "color",
+        "annotation"
+    ],
+    "categories": [
+        "Other"
+    ],
+    "engines": {
+        "vscode": "^1.101.0"
+    },
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "Ein Color",
+            "type": "object",
+            "properties": {
+                "eincolor.Mode": {
+                    "order": 0,
+                    "type": "string",
+                    "enum": [
+                        "Cursor On Line",
+                        "Always On"
+                    ],
+                    "markdownEnumDescriptions": [
+                        "Color all equations if cursor on a line with equation or near it",
+                        "Equations will be always colored"
+                    ],
+                    "default": "Cursor On Line",
+                    "description": "If equations should be always on or only when the cursor is on the same line as any equation (or near it)."
+                },
+                "eincolor.CursorNearRange": {
+                    "order": 1,
+                    "type": "number",
+                    "default": 2,
+                    "minimum": 0,
+                    "maximum": 7,
+                    "description": "How near the cursor has to be to a line with an equation (1+) or exactly on line (0)."
+                },
+                "eincolor.Coloring": {
+                    "order": 2,
+                    "type": "string",
+                    "enum": [
+                        "Hashed",
+                        "Semi Hashed",
+                        "Ordered"
+                    ],
+                    "markdownEnumDescriptions": [
+                        "Use term string hash (same across any equation, probable collisions)",
+                        "Use term string hash for non colliding first, then fit the rest <br> (same across any equation for non colliding terms)",
+                        "Use term order in equation <br> (different depending on the term position in equation)"
+                    ],
+                    "default": "Semi Hashed",
+                    "description": "How to pick the term color from pallette."
+                },
+                "eincolor.HashSeed": {
+                    "order": 2,
+                    "type": "number",
+                    "default": 0,
+                    "description": "Change if you want to try different colorings with possibly less collisions."
+                },
+                "eincolor.UseBoldTerms": {
+                    "order": 3,
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Turn on to have all the terms bold. This can help making the colors more visible."
+                },
+                "eincolor.UseCustomColorPalette": {
+                    "order": 4,
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If a custom color palette should be used. If not then the default Light/Dark 8 colors palette will be used."
+                },
+                "eincolor.CustomColorPalette": {
+                    "order": 5,
+                    "markdownDescription": "Define custom pallette of colors using a valid css format. The default values are from the default dark theme.",
+                    "type": "array",
+                    "default": [
+                        "lch(69% 60 30 )",
+                        "lch(71% 60 260)",
+                        "lch(78% 60 69 )",
+                        "lch(70% 60 303)",
+                        "lch(93% 80 120)",
+                        "lch(78% 60 334)",
+                        "lch(85% 60 196)",
+                        "lch(90% 60 90 )"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "eincolor.EquationPrefix": {
+                    "order": 6,
+                    "markdownDescription": "List of prefixes to search for. After finding a prefix, an equation is extracted from the the next '/\" to the next '/\" or end of line.",
+                    "type": "array",
+                    "default": [
+                        "einsum(",
+                        "einops.rearrange(",
+                        "einops.reduce(",
+                        "einops.repeat("
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "eincolor.IncludedFiles": {
+                    "order": 7,
+                    "markdownDescription": "Configure [glob](https://code.visualstudio.com/docs/editor/glob-patterns) patterns for including files and folders that may contain einsum/einops equations",
+                    "type": "array",
+                    "default": [
+                        "**/*.py",
+                        "**/*.ipynb"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/node": "20.x",
+        "@types/vscode": "^1.101.0",
+        "@typescript-eslint/eslint-plugin": "^8.31.1",
+        "@typescript-eslint/parser": "^8.31.1",
+        "@vscode/test-cli": "^0.0.11",
+        "eslint": "^9.25.1",
+        "typescript": "^5.8.3"
+    }
+}

@@ -28,12 +28,6 @@ If you find this useful then give Ein Color a try.
 
 *(you can also see a full attention head example at the end of the readme)*
 
-<br> 
-
-## Install
-
-You can install the latest beta version using the .vsix file. In VSCode open the extensions tab a click the top "..." and choose "install from VSIX ...".
-
 <br>
 
 ## Features

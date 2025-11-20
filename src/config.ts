@@ -12,12 +12,15 @@
     equation.Term class. 
 
     [ Update ] translates all of the settings into properties. It's called by [ Init ] in
-    extension.ts triggered at extensions start and  onDidChangeConfiguration event.
+    extension.ts triggered at extensions start and  onDidChangeConfiguration event. All 
+    validation is made here.
     
     [ CreateDecorations ] is called to create full decorations (colors x states) based on the 
     settings.
     
     [ IsDocumentIncluded ] simply check if the file fits the include filter in the settings.
+
+    [ SearchForPrefix ] wrapper function for the prefix RegEx to search through Text
 
     Lastly there are the definitions of the default Light and Dark palettes.
 */
@@ -34,7 +37,7 @@ export class Config{
       
     private _Coloring = eq.eColoring.SemiHashed;
     private _HashSeed:number = 0;
-    private _Prefixes:string[] = [];
+    private PrefixRegEx:RegExp = RegExp('');
     
     private IncludedFiles:string = "{*.*}";
     private _UsesCustomPalette:boolean = false;
@@ -47,7 +50,6 @@ export class Config{
                                           else                         {return this.DarkPalette.length;}}
     get Coloring  (): eq.eColoring      { return this._Coloring;       }
     get HashSeed  (): number            { return this._HashSeed;       }
-    get Prefixes  (): readonly string[] { return this._Prefixes;       }
 
     get UsesCustomPalette(): boolean    { return this._UsesCustomPalette;    }  
 
@@ -69,14 +71,42 @@ export class Config{
         if (cfg.IncludedFiles.length === 0) {this.IncludedFiles = "{**/*.*}";}
         else                                {this.IncludedFiles = "{" + cfg.IncludedFiles.join(',') + "}";}
 
-        this._Prefixes = cfg.EquationPrefix;
-
         this._UsesCustomPalette = cfg.UseCustomColorPalette;
         
         this.CustomPalette = cfg.CustomColorPalette;
         if (this.CustomPalette.length === 0) {this._UsesCustomPalette = false;};
 
         this.UseBoldTerms = cfg.UseBoldTerms;
+
+
+        //>> CHECK ALL PREFIX REGEX AND GATHER ONLY VALID ONES (SHOW ERROR MESSAGE FOR EACH ERROR)
+        let validPrefix:string[] = [];
+
+        for (const prefix of cfg.EquationPrefix) {
+            try{
+                RegExp(prefix);
+                validPrefix.push(prefix);
+            }
+            catch(error:any){
+                vscode.window.showErrorMessage(
+                    `${error.message}`,"Open Settings"
+                    
+                ).then(selection => {
+                    if (selection === "Open Settings") {
+                        vscode.commands.executeCommand(
+                            'workbench.action.openSettings',
+                            'eincolor.EquationPrefix'
+                        );
+                    };
+                });
+            }       
+        }
+
+        let prefixes = validPrefix.join('\\s*\\(|');
+        if (validPrefix.length > 0){
+            prefixes = prefixes + '\\s*\\(';
+        };
+        this.PrefixRegEx = RegExp(prefixes);
     }
 
     CreateDecorations():vscode.TextEditorDecorationType[][]{
@@ -131,6 +161,11 @@ export class Config{
     IsDocumentIncluded(Document:vscode.TextDocument): boolean{
         let filter: vscode.DocumentFilter = { pattern: this.IncludedFiles};
         return vscode.languages.match(filter, Document) !== 0;
+    }
+
+    SearchForPrefix(Text:string): RegExpExecArray|null{
+
+        return this.PrefixRegEx.exec(Text);
     }
 
     ///=== DEFAULT PALETTES ===///

@@ -433,15 +433,14 @@ export function activate(context: vscode.ExtensionContext) {
         //>> [1]: SKIP EMPTY LINE
         if (Line.isEmptyOrWhitespace){return [-1,-1];}
 
-        //>> [2]: TRY TO FIND ANY OF THE EINSUM/EINOPS PREFIXES (NOT REGEX TO QUICKLY EXCLUDE MOST LINES)
+        //>> [2]: TRY TO FIND ANY OF THE EINSUM/EINOPS PREFIXES
         let start = -1;
-        for (const prefix of Cfg.Prefixes) {
-            start = text.indexOf(prefix);
-            if (start !== -1){
-                start += prefix.length;
-                break;
-            }
-        }
+
+        let prefix = Cfg.SearchForPrefix(text);
+        if (prefix){
+            start = prefix.index + prefix[0].length;
+        };
+
         if (start === -1){return [-1,-1];}
 
 

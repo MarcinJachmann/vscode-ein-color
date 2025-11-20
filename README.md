@@ -82,7 +82,37 @@ This approach was chosen to optimize updating the coloring/styling without havin
     But you can use your own palette by supplying a list of valid css colors. The default palettes color values are shown at the end of this readme, so you can change/remove/add any colors or create a new one.
 
 - ### [ Equation Prefix ]
-    By default Ein Color will search for any einsum prefix or the three einops functions prefix. If you use shorthands for einops (e.g. *"reduce("* instead of *"einops.reduce("* ) you can change it here. 
+    By default Ein Color will search for any einsum function or the three einops functions prefix using RegEx and
+    try to extract the following equation. 
+    
+    Here are the first four default RegEx for einsum and einops
+    functions:
+
+    - \b[einsum]()
+    - \b[einops\\.rearrange]()
+    - \b[einops\\.reduce]()
+    - \b[einops\\.repeat]()
+
+    The '\b' ensures this is the beginning of a word (remember that '.' has to be escaped with '\\'). 
+    
+    Next the three default RegEx handle shorthand version for einops functions without the 'einops.' part:
+
+    - (?<!\\.)\b[rearrange]()
+    - (?<!\\.)\b[reduce]()
+    - (?<!\\.)\b[repeat]()
+    
+    Here the '(?<!\\.)' ensures that there is no '.' before the function name. This is to ensure that there are
+    no collisions with any libraries that could have such common named functions in them.
+
+    <br>
+
+    All regex are also internally appended to include an opening bracket '('. After that Ein Color will search for:
+
+    - an explicit parameter name (equation | pattern | subscripts) and the following opening quote mark ('/")
+    - or first opening quote mark ('/") after the opening bracket '(' or after a dividing comma ',' (to handle einops syntax)
+
+    From there the equation will be extracted till the next quote mark ('/") or end of line.
+
 
 - ### [ Included Files ]
     By default python and jupyter notebook files are included so Ein Color will only analyze these files. You can add any additional files or limit the scope to specific folder using [glob](https://code.visualstudio.com/docs/editor/glob-patterns) patterns. 

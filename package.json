@@ -1,7 +1,7 @@
 {
     "name": "vscode-eincolor",
     "displayName": "Ein Color",
-    "version": "0.9.0",
+    "version": "1.0.0",
     "description": "Ein Color brings term coloring and styling to your einsum / einops equations for better readability.",
     "publisher": "MarcinJachmann",
     "license": "MIT",
@@ -24,6 +24,10 @@
     "categories": [
         "Other"
     ],
+    "galleryBanner": {
+		"color": "#101319",
+		"theme": "dark"
+	},
     "engines": {
         "vscode": "^1.101.0"
     },
@@ -112,13 +116,16 @@
                 },
                 "eincolor.EquationPrefix": {
                     "order": 6,
-                    "markdownDescription": "List of prefixes to search for. After finding a prefix, an equation is extracted from the the next '/\" to the next '/\" or end of line.",
+                    "markdownDescription": "List of RegEx prefixes to search for. After finding a prefix, an equation is extracted after an opening bracket '(' from the the next '/\" to the next '/\" or end of line. See [readme](https://github.com/MarcinJachmann/vscode-ein-color?tab=readme-ov-file#-equation-prefix-) for more details.",
                     "type": "array",
                     "default": [
-                        "einsum(",
-                        "einops.rearrange(",
-                        "einops.reduce(",
-                        "einops.repeat("
+                        "\\beinsum",
+                        "\\beinops\\.rearrange",
+                        "\\beinops\\.reduce",
+                        "\\beinops\\.repeat",
+                        "(?<!\\.)\\brearrange",
+                        "(?<!\\.)\\breduce",
+                        "(?<!\\.)\\brepeat"
                     ],
                     "items": {
                         "type": "string"

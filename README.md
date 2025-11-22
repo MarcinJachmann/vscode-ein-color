@@ -39,6 +39,12 @@ If you find this useful then give Ein Color a try.
 
 <br>
 
+## Installation
+
+This extension is available on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=MarcinJachmann.vscode-eincolor) for Visual Studio Code.
+
+<br>
+
 ## Known limitations
 
 Currently Ein Color works on a line-by-line basis so it only handles einsum / einops written without line breaks. This seems to cover most of the usage when looking at the GitHub codebase.
